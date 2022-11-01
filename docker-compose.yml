@@ -5,27 +5,43 @@ services:
     build:
       context: node
     container_name: app
-    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s docker-entrypoint.sh
     networks:
       - desafio-node-network
+    environment:
+      - HOST=db
+      - USER=root
+      - PASSWORD=root
+      - DATABASE=nodedb
     depends_on:
       - db
 
   db:
     image: mysql:5.7
-    command: --innodb-use-native-aio=0
+    command: --innodb-use-native-aio=0 --init-file /data/application/init.sql
     container_name: db
     restart: always
     tty: true
     volumes:
       - .var:/var/lib/mysql
+      - ./mysql/init.sql:/data/application/init.sql
     environment:
       - MYSQL_DATABASE=nodedb
       - MYSQL_ROOT_PASSWORD=root
     networks:
       - desafio-node-network
+    ports:
+      - "3306:3306"
 
   nginx:
+    build:
+      context: nginx
+    container_name: nginx
+    networks:
+      - desafio-node-network
+    depends_on:
+      - app
+    ports:
+      - "8080:80"
 
 networks:
   desafio-node-network:

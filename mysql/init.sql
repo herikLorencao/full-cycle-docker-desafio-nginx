@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS nodedb.people(
+    id INTEGER AUTO_INCREMENT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+
+    CONSTRAINT pk_people
+        PRIMARY KEY (id)
+);
