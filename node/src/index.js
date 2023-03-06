@@ -8,7 +8,7 @@ const port = 3000;
 const database = {
     host: 'db',
     user: 'root',
-    password: 'root',
+    password: 'password',
     database: 'nodedb'
 };
 
@@ -17,7 +17,17 @@ app.get("/", (_, res) => {
     const peopleName = faker.name.fullName();
     
     const connection = mysql.createConnection(database);
+    const createTableScript = `
+        CREATE TABLE IF NOT EXISTS nodedb.people(
+            id INTEGER AUTO_INCREMENT NOT NULL,
+            name VARCHAR(255) NOT NULL,
+    
+            CONSTRAINT pk_people
+                PRIMARY KEY (id)
+        )`;
     const insertSql = `INSERT INTO people(name) VALUES ('${peopleName}')`;
+
+    connection.query(createTableScript);
     connection.query(insertSql);
 
     const header = "<h1>Full Cycle Rocks!</h1>";

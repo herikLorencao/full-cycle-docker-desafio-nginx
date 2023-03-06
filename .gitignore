@@ -1,2 +1,2 @@
-.var/
+.mysql_data/
 **/**/node_modules/
